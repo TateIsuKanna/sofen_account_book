@@ -18,6 +18,13 @@ void accout_book::change_user(string user_name){
 void accout_book::add_record(){
 }
 
+void accout_book::search_by_name(string name){
+        auto found_data = find_if(data.begin(), data.end(), [name](accout_book::record x) {return x.name==name;});
+        if (found_data != data.end()) {
+                cout <<  (*found_data).name << (*found_data).value << endl;
+        }
+}
+
 accout_book master;
 
 void signal_handler(int signal_n){
@@ -25,8 +32,13 @@ void signal_handler(int signal_n){
         }
 }
 
+
 int main(){
         signal(SIGINT, signal_handler);
+        //accout_book::record test=accout_book::record(1,"用途",50000);
+        //master.data.push_back(test);
+        //test=accout_book::record(1,"test",10000);
+        //master.data.push_back(test);
         while(true){
                 string command;
                 cin>>command;
@@ -35,8 +47,7 @@ int main(){
                 }else if(command.find("add")==0){
                         master.add_record();
                 }else if(command.find("search")==0){
+                        master.search_by_name("");
                 }
-                //record test=record(1,"用途",50000);
-                //accout_book_list.push_back(test);
         }
 }
