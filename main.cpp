@@ -1,47 +1,37 @@
-#include<iostream>
-#include<string>
-#include<iomanip>
-#include<sstream>
-#include<vector>
-using namespace std;
+#include"main.hpp"
 
-class accout_book{
-        class record{
-                public:
-                        time_t date;
-                        string name;
-                        long long value;
+accout_book::record::record(time_t a_date,string a_name,long long a_value){
+        date=a_date;
+        name=a_name;
+        value=a_value;
+}
 
-                        record(time_t a_date,string a_name,long long a_value){
-                                date=a_date;
-                                name=a_name;
-                                value=a_value;
-                        }
-        };
-        public:
-                vector<record> data;
-                void change_user(string user){
-                        ifstream file_stream;
-                        file_stream.open(user,ios::in);
-                        while(!file_stream.eof()){
-                                string line;
-                                getline(file_stream,line);
-                        }
-                }
+void accout_book::change_user(string user_name){
+        ifstream file_stream;
+        file_stream.open(user_name,ios::in);
+        while(!file_stream.eof()){
+                string line;
+                getline(file_stream,line);
+        }
+}
 
-                void add_record(){
-                }
-};
-
+void accout_book::add_record(){
+}
 
 accout_book master;
 
+void signal_handler(int signal_n){
+        if(signal_n==SIGINT){
+        }
+}
+
 int main(){
+        signal(SIGINT, signal_handler);
         while(true){
                 string command;
                 cin>>command;
                 if(command.find("user")==0){
-                        master.change_user();
+                        master.change_user("");
                 }else if(command.find("add")==0){
                         master.add_record();
                 }else if(command.find("search")==0){
