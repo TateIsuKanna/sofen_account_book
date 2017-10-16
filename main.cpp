@@ -6,6 +6,11 @@ accout_book::record::record(time_t a_date,string a_name,money a_value){
         value=a_value;
 }
 
+ostream& operator << (ostream& os, const accout_book::record& r){
+	os<<r.date<<" "<<r.name<<" "<<r.value<<endl;
+	return os;
+}
+
 void accout_book::change_user(string user_name){
         ifstream file_stream;
         file_stream.open(user_name,ios::in);
@@ -29,6 +34,7 @@ void accout_book::search_by_name(string name){
         auto found_data = find_if(data.begin(), data.end(), [name](accout_book::record x) {return x.name==name;});
         if (found_data != data.end()) {
                 cout <<  (*found_data).name << (*found_data).value << endl;
+		cout<<(*found_data);
         }
 }
 
@@ -37,7 +43,6 @@ void accout_book::save(){
 void accout_book::load(string user){
 }
 
-
 accout_book master;
 
 void signal_handler(int signal_n){
@@ -45,6 +50,20 @@ void signal_handler(int signal_n){
 		master.save();
 		exit(1);
         }
+}
+
+void add_command(){
+	string date_str;
+	string name;
+	money value;
+	cin>>date_str>>name>>value;
+
+	time_t date=time(nullptr);
+	tm* lt=localtime(&date);
+	lt->tm_mday=stoi(date_str);
+	date=mktime(lt);
+
+	master.add_record(date,name,value);
 }
 
 int main(){
@@ -57,17 +76,7 @@ int main(){
 			cin>>user;
                         master.change_user("");
                 }else if(command.find("add")==0){
-			string date_str;
-			string name;
-			money value;
-			cin>>date_str>>name>>value;
-
-			time_t date=time(nullptr);
-			tm* lt=localtime(&date);
-			lt->tm_mday=stoi(date_str);
-			date=mktime(lt);
-
-                        master.add_record(date,name,value);
+			add_command();
                 }else if(command.find("del")==0){
 			string name;
 			cin>>name;
