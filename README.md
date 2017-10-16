@@ -1,7 +1,7 @@
 # sofen_account_book
 4人で作った家計簿ソフト．
 
-##Building
+## Building
 ```
 g++ -std=c++11 main.cpp
 ```
