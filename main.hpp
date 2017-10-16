@@ -22,5 +22,8 @@ class accout_book{
                 vector<record> data;
                 void change_user(string user);
                 void add_record(time_t date,string name,money value);
+                void del_by_name(string name);
                 void search_by_name(string name);
+                void save();
+                void load(string user);
 };
