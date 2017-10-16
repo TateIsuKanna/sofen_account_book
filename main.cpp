@@ -1,6 +1,6 @@
 #include"main.hpp"
 
-accout_book::record::record(time_t a_date,string a_name,long long a_value){
+accout_book::record::record(time_t a_date,string a_name,money a_value){
         date=a_date;
         name=a_name;
         value=a_value;
@@ -15,7 +15,8 @@ void accout_book::change_user(string user_name){
         }
 }
 
-void accout_book::add_record(){
+void accout_book::add_record(time_t date,string name,money value){
+	data.push_back(accout_book::record(date,name,value));
 }
 
 void accout_book::search_by_name(string name){
@@ -29,6 +30,7 @@ accout_book master;
 
 void signal_handler(int signal_n){
         if(signal_n==SIGINT){
+		exit(1);
         }
 }
 
@@ -43,11 +45,25 @@ int main(){
                 string command;
                 cin>>command;
                 if(command.find("user")==0){
+			string user;
+			cin>>user;
                         master.change_user("");
                 }else if(command.find("add")==0){
-                        master.add_record();
+			string date_str;
+			string name;
+			money value;
+			cin>>date_str>>name>>value;
+
+			time_t date=time(nullptr);
+			tm* lt=localtime(&date);
+			lt->tm_mday=stoi(date_str);
+			date=mktime(lt);
+
+                        master.add_record(date,name,value);
                 }else if(command.find("search")==0){
-                        master.search_by_name("");
+			string name;
+			cin>>name;
+                        master.search_by_name(name);
                 }
         }
 }

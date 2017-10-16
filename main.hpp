@@ -1,14 +1,13 @@
 #include <iostream>
 #include <string>
-#include <iomanip>
-#include <sstream>
 #include <vector>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
-#include <signal.h>
-#include <unistd.h>
-#include <stdlib.h>
 #include <algorithm>
+#include <signal.h>
+
+using money=long long;
 
 using namespace std;
 class accout_book{
@@ -17,11 +16,11 @@ class accout_book{
                         public:
                                 time_t date;
                                 string name;
-                                long long value;
-                                record(time_t a_date,string a_name,long long a_value);
+                                money value;
+                                record(time_t a_date,string a_name,money a_value);
                 };
                 vector<record> data;
                 void change_user(string user);
-                void add_record();
+                void add_record(time_t date,string name,money value);
                 void search_by_name(string name);
 };
