@@ -7,7 +7,8 @@ accout_book::record::record(time_t a_date,string a_name,money a_value){
 }
 
 ostream& operator << (ostream& os, const accout_book::record& r){
-	os<<r.date<<" "<<r.name<<" "<<r.value<<endl;
+	tm* lt=localtime(&r.date);
+	os<<lt->tm_year+1900<<"/"<<lt->tm_mon<<"/"<<lt->tm_mday<<" "<<r.name<<" "<<r.value;
 	return os;
 }
 
@@ -33,8 +34,7 @@ void accout_book::del_by_name(string name){
 void accout_book::search_by_name(string name){
         auto found_data = find_if(data.begin(), data.end(), [name](accout_book::record x) {return x.name==name;});
         if (found_data != data.end()) {
-                cout <<  (*found_data).name << (*found_data).value << endl;
-		cout<<(*found_data);
+		cout<<(*found_data)<<endl;
         }
 }
 

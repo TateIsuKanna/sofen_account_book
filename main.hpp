@@ -13,7 +13,6 @@ using namespace std;
 class accout_book{
         public:
                 class record{
-			ostream& operator << (ostream& os, const record& r);
                         public:
                                 time_t date;
                                 string name;
