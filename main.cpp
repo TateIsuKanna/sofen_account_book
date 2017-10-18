@@ -8,7 +8,7 @@ accout_book::record::record(time_t a_date,string a_name,money a_value){
 
 ostream& operator << (ostream& os, const accout_book::record& r){
 	tm* lt=localtime(&r.date);
-	os<<lt->tm_year+1900<<"/"<<lt->tm_mon<<"/"<<lt->tm_mday<<" "<<r.name<<" "<<r.value;
+	os<<lt->tm_year+1900<<"/"<<lt->tm_mon+1<<"/"<<lt->tm_mday<<" "<<r.name<<" "<<r.value;
 	return os;
 }
 
