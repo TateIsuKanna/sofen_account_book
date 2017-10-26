@@ -1,5 +1,5 @@
 nn:main.cpp main.hpp
-	g++ -std=c++11 -o nn main.cpp
+	g++ -std=c++0x -o nn main.cpp
 
 run:nn
 	./nn

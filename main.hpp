@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <signal.h>
 
-using money=long long;
+typedef long long money;
 
 using namespace std;
 class accout_book{

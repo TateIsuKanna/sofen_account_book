@@ -25,14 +25,21 @@ void accout_book::add_record(time_t date,string name,money value){
 	data.push_back(accout_book::record(date,name,value));
 }
 
+string lambda_is_equal_by_name_name_arg;
+bool lambda_is_equal_by_name(accout_book::record d){
+        return d.name==lambda_is_equal_by_name_name_arg;
+}
+
 void accout_book::del_by_name(string name){
-	  data.erase(remove_if(data.begin(), data.end(), 
-		[name](record d){return d.name==name;}
-				  ), data.end());
+        lambda_is_equal_by_name_name_arg=name;
+        data.erase(remove_if(data.begin(), data.end(), 
+                                lambda_is_equal_by_name
+                            ), data.end());
 }
 
 void accout_book::search_by_name(string name){
-        auto found_data = find_if(data.begin(), data.end(), [name](accout_book::record x) {return x.name==name;});
+        lambda_is_equal_by_name_name_arg=name;
+        auto found_data = find_if(data.begin(), data.end(), lambda_is_equal_by_name);
         if (found_data != data.end()) {
 		cout<<(*found_data)<<endl;
         }
@@ -58,7 +65,7 @@ void add_command(){
 	money value;
 	cin>>date_str>>name>>value;
 
-	time_t date=time(nullptr);
+	time_t date=time(NULL);
 	tm* lt=localtime(&date);
 	lt->tm_mday=stoi(date_str);
 	date=mktime(lt);
