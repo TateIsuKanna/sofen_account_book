@@ -73,7 +73,12 @@ void add_command(){
 	master.add_record(date,name,value);
 }
 
-int main(){
+
+int main(int argc,char* argv[]){
+        if(argc==2 && string(argv[1])=="-h"){
+                cout<<"usage"<<endl;
+                return 0;
+        }
         signal(SIGINT, signal_handler);
         while(true){
                 string command;
@@ -92,8 +97,6 @@ int main(){
 			string name;
 			cin>>name;
                         master.search_by_name(name);
-                }else if(command.find("-h")==0){
-			//TODO:ヘルプ書く
                 }else{
 			cout<<": '"<<command<<"' is not a command. See ' -h'."<<endl;
 		}
