@@ -13,11 +13,28 @@ ostream& operator << (ostream& os, const accout_book::record& r){
 }
 
 void accout_book::change_user(string user_name){
+        current_username=user_name;
         ifstream file_stream;
-        file_stream.open(user_name,ios::in);
-        while(!file_stream.eof()){
-                string line;
-                getline(file_stream,line);
+        file_stream.open(current_username,ios::in);
+        string line;
+        while(getline(file_stream,line)){
+
+                //HACK:流石にちょっと気持ち悪い実装
+                string token[3];
+                istringstream token_stream(line);
+                for(int c_i=0;c_i<3;++c_i){
+                        getline(token_stream,token[c_i],',');
+                }
+                time_t date;
+                string name;
+                money value;
+                date=stof(token[0]);
+                name=token[1];
+                value=stof(token[2]);
+                cout<<date<<endl;
+                cout<<name<<endl;
+                cout<<value<<endl;
+                cout<<"*****"<<endl;
         }
 }
 
@@ -46,8 +63,6 @@ void accout_book::search_by_name(string name){
 }
 
 void accout_book::save(){
-}
-void accout_book::load(string user){
 }
 
 accout_book master;
@@ -86,7 +101,7 @@ int main(int argc,char* argv[]){
                 if(command.find("user")==0){
 			string user;
 			cin>>user;
-                        master.change_user("");
+                        master.change_user(user);
                 }else if(command.find("add")==0){
 			add_command();
                 }else if(command.find("del")==0){
