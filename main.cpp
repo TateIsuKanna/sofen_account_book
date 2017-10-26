@@ -17,8 +17,8 @@ void accout_book::change_user(string user_name){
         ifstream file_stream;
         file_stream.open(current_username,ios::in);
         string line;
+        data.clear();
         while(getline(file_stream,line)){
-
                 //HACK:流石にちょっと気持ち悪い実装
                 string token[3];
                 istringstream token_stream(line);
@@ -31,10 +31,7 @@ void accout_book::change_user(string user_name){
                 date=stof(token[0]);
                 name=token[1];
                 value=stof(token[2]);
-                cout<<date<<endl;
-                cout<<name<<endl;
-                cout<<value<<endl;
-                cout<<"*****"<<endl;
+                data.push_back(accout_book::record(date,name,value));
         }
 }
 
@@ -63,6 +60,10 @@ void accout_book::search_by_name(string name){
 }
 
 void accout_book::save(){
+        ofstream file_stream(current_username);
+        for(auto r=data.begin();r<data.end();++r){
+                file_stream<<r->date<<","<<r->name<<","<<r->value<<endl;
+        }
 }
 
 accout_book master;
