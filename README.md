@@ -1,5 +1,5 @@
 # sofen_account_book
-4人で作った家計簿ソフト．
+4人で作り途中の家計簿ソフト．
 
 ## Building
 ```
