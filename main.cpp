@@ -13,9 +13,10 @@ ostream& operator << (ostream& os, const accout_book::record& r){
 }
 
 void accout_book::change_user(string user_name){
+        save();
         current_username=user_name;
         ifstream file_stream;
-        file_stream.open(current_username,ios::in);
+        file_stream.open(current_username);
         string line;
         data.clear();
         while(getline(file_stream,line)){
