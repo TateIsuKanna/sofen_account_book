@@ -5,7 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
-#include <signal.h>
+#include <csignal>
 
 typedef long long money;
 

@@ -99,6 +99,10 @@ int main(int argc,char* argv[]){
         while(true){
                 string command;
                 cin>>command;
+                if (cin.fail()) {
+                        cin.clear();
+                        continue;
+                }
                 if(command.find("user")==0){
 			string user;
 			cin>>user;
