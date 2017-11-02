@@ -1,6 +1,7 @@
 #include <iostream> 
 #include <cstdio>
 #include <cstdlib> 
+#include <string> 
 using namespace std; 
 
 int main() 
@@ -21,22 +22,8 @@ int main()
   fputs("set style lines 5 lc rgb \"gray\"\n",fp);
   fputs("angle_conv(x) = -x +90.0\n",fp);
   fputs("plot \"circle-data0.dat\"using (0):(0):(1):(angle_conv($3)):(angle_conv($2)):($0+1) with circles lc var,\"\"using(0.7*cos(((angle_conv($2)+angle_conv($3))/2.0))):(0.7*sin(((angle_conv($2)+angle_conv($3))/2.0))):1 with labels\n",fp);
-  fflush(fp); 
-
-
-	cout<<"a"<<endl ; 
-  	cin.get();
-	cout<<"a"<<endl ; 
-	return 0;
-  	cout<<"a"<<endl ; 
-  	pclose(fp); 
-  	cout<<"a"<<endl ;  
-
-	char string;
-	cin>>string;
-	if(string == "end"){
-		exit(1);
-	}
-
-
-} 
+  fflush(fp);  
+  cin.get();
+  pclose(fp);   
+  return 0; 
+  } 
