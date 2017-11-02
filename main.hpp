@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <csignal>
 
-typedef long long money;
+using money=long long;
 
 using namespace std;
 class accout_book{
