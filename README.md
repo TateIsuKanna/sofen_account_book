@@ -1,9 +1,9 @@
 # sofen_account_book
 4人で作り途中の家計簿ソフト．
 
-## Building
+## Build and run
 ```
-g++ -std=c++11 main.cpp
+make run
 ```
 
 ## Usage
