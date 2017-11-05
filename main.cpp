@@ -8,7 +8,7 @@ accout_book::record::record(time_t a_date,string a_name,money a_value){
 
 ostream& operator << (ostream& os, const accout_book::record& r){
 	tm* lt=localtime(&r.date);
-	os<<lt->tm_year+1900<<"/"<<lt->tm_mon+1<<"/"<<lt->tm_mday<<" "<<r.name<<" "<<r.value;
+	os<<lt->tm_year+1900<<"/"<<lt->tm_mon+1<<"/"<<lt->tm_mday<<" "<<r.name<<" "<<r.value;//HACK:マジックナンバーでは
 	return os;
 }
 
@@ -85,7 +85,22 @@ void add_command(){
         //例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
 	time_t date=time(nullptr);
 	tm* lt=localtime(&date);
-	lt->tm_mday=stoi(date_str);
+
+        regex date_re(R"((((\d{4,})/)?(\d{1,2})/)?(\d{1,2}))");
+        sregex_token_iterator it;
+        it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
+        if(it->str()!=""){//HACK:多分
+                lt->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
+        }
+        it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
+        if(it->str()!=""){//HACK:多分
+                lt->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
+        }
+        it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
+        if(it->str()!=""){//HACK:多分
+                lt->tm_mday=stoi(it->str());
+        }
+
 	date=mktime(lt);
 
 	master.add_record(date,name,value);
