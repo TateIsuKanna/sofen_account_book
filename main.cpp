@@ -47,14 +47,15 @@ void accout_book::del_by_name(string name){
 }
 
 void accout_book::search_by_name(string name){
-        auto search_iter=data.begin();
-        while(
+        for(
+                auto search_iter=data.begin();
                 (search_iter = find_if(search_iter, data.end(), 
                         [name](record d){return d.name==name;}
-                ))!=data.end()
+                ))!=data.end();
+                search_iter++
         ){
                 cout<<(*search_iter)<<endl;
-                search_iter++;
+                
         }
 }
 
@@ -80,6 +81,8 @@ void add_command(){
 	money value;
 	cin>>date_str>>name>>value;
 
+        //日付補完．今日の日付を元に，入力した部分だけ置き換えする．
+        //例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
 	time_t date=time(nullptr);
 	tm* lt=localtime(&date);
 	lt->tm_mday=stoi(date_str);
