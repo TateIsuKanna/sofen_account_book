@@ -86,7 +86,7 @@ void add_command(){
 	time_t date=time(nullptr);
 	tm* lt=localtime(&date);
 
-        regex date_re(R"((((\d{4,})/)?(\d{1,2})/)?(\d{1,2}))");
+        regex date_re(R"((((\d{4,})\/)?([1-9]|1[0-2])\/)?([1-3]\d|[1-9]))");
         sregex_token_iterator it;
         it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
         if(it->str()!=""){//HACK:多分
