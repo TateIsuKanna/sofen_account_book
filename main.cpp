@@ -47,11 +47,14 @@ void accout_book::del_by_name(string name){
 }
 
 void accout_book::search_by_name(string name){
-        auto found_data = find_if(data.begin(), data.end(), 
-                [name](record d){return d.name==name;}
-                );
-        if (found_data != data.end()) {
-		cout<<(*found_data)<<endl;
+        auto search_iter=data.begin();
+        while(
+                (search_iter = find_if(search_iter, data.end(), 
+                        [name](record d){return d.name==name;}
+                ))!=data.end()
+        ){
+                cout<<(*search_iter)<<endl;
+                search_iter++;
         }
 }
 
