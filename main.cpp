@@ -29,9 +29,9 @@ void accout_book::change_user(string user_name){
                 time_t date;
                 string name;
                 money value;
-                date=stof(token[0]);
+                date=stoi(token[0]);
                 name=token[1];
-                value=stof(token[2]);
+                value=stoll(token[2]);
                 data.push_back(accout_book::record(date,name,value));
         }
 }
