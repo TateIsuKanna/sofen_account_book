@@ -60,8 +60,8 @@ void accout_book::search_by_name(string name){
 
 void accout_book::save(){
         ofstream file_stream(current_username);
-        for(auto r=data.begin();r<data.end();++r){
-                file_stream<<r->date<<","<<r->name<<","<<r->value<<endl;
+        for(auto r:data){
+                file_stream<<r.date<<","<<r.name<<","<<r.value<<endl;
         }
 }
 
