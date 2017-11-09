@@ -30,8 +30,9 @@ int main(){
 			name_value_map.insert(make_pair(data.name, data.value));
 		}
 	}
+	ofstream file("data.dat");
 	for(auto value:name_value_map){
-		cout<<value->
+		file << value->first <<endl;
 	}
 	
 	 cout << name_value_map.at("a") << endl;
