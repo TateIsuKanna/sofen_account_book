@@ -2,23 +2,42 @@
 #include <iostream> 
 #include <cstdio> 
 #include<fstream>
+#include"main.hpp"
+#include<map>
 using namespace std; 
 
 int main(){
+	accout_book master;
 
-	char koumoku[5][20]={"syokuhi","koutuhi","kounetuhi","kousaihi","sonota"};
-	float  sisyutu[]={10000,10000,10000,10000,10000};
-	float wariai[]={0,0,0,0,0};
+	string koumoku[100];
+	float  sisyutu[100];
+	float wariai[100];
 	float  outall;
 	int i;
 	float hinan;
 	int graph();
+	map<string, money> name_value_map;
 
 	outall=0;
-	for(i=0;i<5;i++){
-		outall+=sisyutu[i];
-	}
+	for(auto data:master.data){
+		if(data.value<0){
+			outall-=data.value;
+		}
 
+		if(name_value_map.find(data.name) != name_value_map.end()){
+			name_value_map.insert(make_pair(data.name,name_value_map.at(data.name) + data.value));
+		}else{
+			name_value_map.insert(make_pair(data.name, data.value));
+		}
+	}
+	for(auto value:name_value_map){
+		cout<<value->
+	}
+	
+	 cout << name_value_map.at("a") << endl;
+	 
+	
+	int value = name_value_map.at("a");
 	for(i=0;i<5;i++){
 		wariai[i]=sisyutu[i]/outall;
 	}
@@ -35,7 +54,6 @@ int main(){
 		hinan=hinan+wariai[i]*360;
 	}
 	graph();
-	return(0);
 	
 
 }
