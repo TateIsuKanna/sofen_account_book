@@ -46,12 +46,11 @@ int main(){
 			suball+=abs(data.value);
 			utiwake[4]+=abs(data.value);
 		}
-		else if(data.name=="その他"){
+		else{
 			all+=abs(data.value);
 			suball+=abs(data.value);
 			utiwake[5]+=abs(data.value);
 		}
-		else cout<<"ERROR"<<i<<endl;
 		zandaka+=data.value;
 	}
 
@@ -84,7 +83,7 @@ int main(){
 		}
 		percent[i]=100.0*(float)utiwake[i]/(float)all;
 		//printf("%-12s %6d円 ,%3d％ \n",name,utiwake[i],(int)round(percent[i]));
-		cout<<name<<utiwake[i]<<(int)round(percent[i])<<endl;
+		cout<<name<<"  "<<utiwake[i]<<"円  "<<(int)round(percent[i])<<"％"<<endl;
 	}
 
 	cout << endl << "支出割合" << endl;
@@ -108,7 +107,7 @@ int main(){
 		}
 		subpercent[i]=100.0*(float)utiwake[i]/(float)suball;
 		//printf("%-12s %6d円 ,%3d％ \n",name,utiwake[i],(int)round(subpercent[i]));
-		cout<<name<<utiwake[i]<<(int)round(subpercent[i])<<endl;
+		cout<<name<<"  "<<utiwake[i]<<"円  "<<(int)round(subpercent[i])<<"％"<<endl;
 	}
 
 	cout << endl << "残高  " << zandaka;
