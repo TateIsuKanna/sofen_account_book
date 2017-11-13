@@ -8,6 +8,12 @@
 #include <csignal>
 #include <regex>
 
+#include <iostream> 
+#include <cstdio> 
+#include <fstream>
+#include <map>
+#include <cmath>
+
 using money=long long;
 
 using namespace std;
