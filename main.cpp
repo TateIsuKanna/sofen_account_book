@@ -1,4 +1,6 @@
 #include"main.hpp"
+#include<map>
+#include<cmath>
 
 accout_book::record::record(time_t a_date,string a_name,money a_value){
         date=a_date;
@@ -106,6 +108,49 @@ void add_command(){
 	master.add_record(date,name,value);
 }
 
+void calc_rate(){
+	money all=0;
+	money suball=0;
+	money zandaka=0;
+
+	map<string,money>name_value_map;
+
+	for(auto data:master.data){
+		if(name_value_map.find(data.name)==end(name_value_map)){
+			name_value_map[data.name]=data.value;
+		}else{
+			name_value_map[data.name]+=data.value;
+		}
+
+		if(data.value>0){
+			all+=data.value;
+		}else{
+			suball+=abs(data.value);
+		}
+		zandaka+=data.value;
+	}
+
+	cout << endl << "総収入割合" << endl;
+	for(auto data:name_value_map){
+		if(data.second>0){
+			cout<<data.first<<"  "<<data.second<<"円  "<<(int)round((float)data.second/(float)all*100)<<"％"<<endl;
+		}
+	}
+
+	cout << endl << "支出割合" << endl;
+	for(auto data:name_value_map){
+		if(data.second<0){
+			cout<<data.first<<"  "<<data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
+		}
+	}
+
+	cout << endl << "残高  " << zandaka <<"円"<<endl;
+	if(zandaka > 0){
+		cout << "黒字" << endl;
+	}else{
+		cout << "赤字！！" << endl;
+	}
+}
 
 int main(int argc,char* argv[]){
         if(argc==2 && string(argv[1])=="-h"){
@@ -134,6 +179,8 @@ int main(int argc,char* argv[]){
 			string name;
 			cin>>name;
                         master.search_by_name(name);
+                }else if(command.find("rate")==0){
+			calc_rate();
                 }else{
 			cout<<": '"<<command<<"' is not a command. See ' -h'."<<endl;
 		}
