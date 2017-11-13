@@ -174,7 +174,7 @@ int graph(){
 	pclose(fp); 
 	return 0; 
 } 
-int calc_rate_graph(){
+void calc_rate_graph(){
 	accout_book master;
 
 	string koumoku[100];
@@ -183,7 +183,6 @@ int calc_rate_graph(){
 	float  outall;
 	int i;
 	float hinan;
-	int graph();
 	map<string, money> name_value_map;
 
 	outall=0;
@@ -200,7 +199,7 @@ int calc_rate_graph(){
 	}
 	ofstream file("data.dat");
 	for(auto value:name_value_map){
-		file << value->first <<endl;
+		file << value.first <<endl;
 	}
 
 	cout << name_value_map.at("a") << endl;
@@ -213,7 +212,6 @@ int calc_rate_graph(){
 
 	hinan=0;
 
-	ofstream file("data.dat");
 
 	for(i=0;i<5;i++){
 
