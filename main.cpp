@@ -175,54 +175,30 @@ int graph(){
 	return 0; 
 } 
 void calc_rate_graph(){
-	accout_book master;
-
-	string koumoku[100];
-	float  sisyutu[100];
-	float wariai[100];
-	float  outall;
-	int i;
-	float hinan;
 	map<string, money> name_value_map;
 
-	outall=0;
+	float  outall=0;
 	for(auto data:master.data){
 		if(data.value<0){
 			outall-=data.value;
+			name_value_map[data.name]-=data.value;
 		}
-
-		if(name_value_map.find(data.name) != name_value_map.end()){
-			name_value_map.insert(make_pair(data.name,name_value_map.at(data.name) + data.value));
-		}else{
-			name_value_map.insert(make_pair(data.name, data.value));
-		}
+		//if(name_value_map.find(data.name) != name_value_map.end()){
+		//	name_value_map.at(data.name)+=data.value;
+		//}else{
+		//	name_value_map.insert(make_pair(data.name, data.value));
+		//}
 	}
 	ofstream file("data.dat");
+	float hinan=0;
 	for(auto value:name_value_map){
-		file << value.first <<endl;
-	}
-
-	cout << name_value_map.at("a") << endl;
-
-
-	int value = name_value_map.at("a");
-	for(i=0;i<5;i++){
-		wariai[i]=sisyutu[i]/outall;
-	}
-
-	hinan=0;
-
-
-	for(i=0;i<5;i++){
-
-		file << koumoku[i] ;
+		file << value.first ;
 		file<< " "<< hinan ;
-		file<< " "<< hinan+wariai[i]*360 <<endl;
-		hinan=hinan+wariai[i]*360;
+		file<< " "<< hinan+value.second/outall *360 <<endl;
+		hinan+=value.second/outall *360;
 	}
+
 	graph();
-
-
 }
 
 int main(int argc,char* argv[]){
