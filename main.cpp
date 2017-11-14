@@ -150,30 +150,6 @@ void calc_rate(){
 	}
 }
 
-
-
-int graph(){ 
-	FILE *fp = popen("gnuplot", "w"); 
-	if (fp == NULL) return -1; 
-	fputs("set mouse\n", fp); 
-	fputs("set size ratio -1\n",fp);
-	fputs("set xrange[-1:1]\n",fp);
-	fputs("set yrange[-1:1]\n", fp);
-	fputs("unset key\nunset border\nunset xtics\nunset ytics\n",fp);
-	fputs("set angles degrees\n",fp);
-	fputs("set style fill transparent solid 0.4 border lc rgb \"black\"\n",fp);
-	fputs("set style lines 1 lc rgb \"yellow\"\n",fp);
-	fputs("set style lines 2 lc rgb \"cyan\"\n",fp);
-	fputs("set style lines 3 lc rgb \"brown\"\n",fp);
-	fputs("set style lines 4 lc rgb \"magenta\"\n",fp);
-	fputs("set style lines 5 lc rgb \"gray\"\n",fp);
-	fputs("angle_conv(x) = -x +90.0\n",fp);
-	fputs("plot \"data.dat\"using (0):(0):(1):(angle_conv($3)):(angle_conv($2)):($0+1) with circles lc var,\"\"using(0.7*cos(((angle_conv($2)+angle_conv($3))/2.0))):(0.7*sin(((angle_conv($2)+angle_conv($3))/2.0))):1 with labels\n",fp);
-	fflush(fp); 
-	cin.get(); 
-	pclose(fp); 
-	return 0; 
-} 
 void calc_rate_graph(){
 	map<string, money> name_value_map;
 
@@ -189,16 +165,34 @@ void calc_rate_graph(){
 		//	name_value_map.insert(make_pair(data.name, data.value));
 		//}
 	}
-	ofstream file("data.dat");
+
+	FILE *fp = popen("gnuplot -p", "w"); 
+	if (fp == nullptr){
+                return;
+        }
+	fputs("set mouse\n", fp); 
+	fputs("set size ratio -1\n",fp);
+	fputs("set xrange[-1:1]\n",fp);
+	fputs("set yrange[-1:1]\n", fp);
+	fputs("unset key\nunset border\nunset xtics\nunset ytics\n",fp);
+	fputs("set angles degrees\n",fp);
+	fputs("set style fill transparent solid 0.4 border lc rgb \"black\"\n",fp);
+	fputs("set style lines 1 lc rgb \"yellow\"\n",fp);
+	fputs("set style lines 2 lc rgb \"cyan\"\n",fp);
+	fputs("set style lines 3 lc rgb \"brown\"\n",fp);
+	fputs("set style lines 4 lc rgb \"magenta\"\n",fp);
+	fputs("set style lines 5 lc rgb \"gray\"\n",fp);
+	fputs("angle_conv(x) = -x +90.0\n",fp);
+	fputs("plot \"-\"u (0):(0):(1):(angle_conv($3)):(angle_conv($2)):($0+1) with circles lc var,\"\"u (0.7*cos(((angle_conv($2)+angle_conv($3))/2.0))):(0.7*sin(((angle_conv($2)+angle_conv($3))/2.0))):1 with labels\n",fp);
 	float hinan=0;
 	for(auto value:name_value_map){
-		file << value.first ;
-		file<< " "<< hinan ;
-		file<< " "<< hinan+value.second/outall *360 <<endl;
+		fprintf(fp,"%s",value.first.c_str());
+		fprintf(fp," %f",hinan);
+		fprintf(fp," %f\n",hinan+value.second/outall *360 );
 		hinan+=value.second/outall *360;
 	}
-
-	graph();
+	fflush(fp); 
+	pclose(fp); 
 }
 
 int main(int argc,char* argv[]){
