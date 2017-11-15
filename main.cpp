@@ -171,11 +171,15 @@ void calc_rate_graph(){
                 return;
         }
 	ostringstream command_os;
-	command_os<<"set mouse\n" 
+	command_os<<
+        "set mouse\n" 
 	"set size ratio -1\n"
 	"set xrange[-1:1]\n"
 	"set yrange[-1:1]\n"
-	"unset key\nunset border\nunset xtics\nunset ytics\n"
+	"unset key\n"
+        "unset border\n"
+        "unset xtics\n"
+        "unset ytics\n"
 	"set angles degrees\n"
 	"set style fill transparent solid 0.4 border lc rgb \"black\"\n"
 	"set style lines 1 lc rgb \"yellow\"\n"
@@ -184,15 +188,16 @@ void calc_rate_graph(){
 	"set style lines 4 lc rgb \"magenta\"\n"
 	"set style lines 5 lc rgb \"gray\"\n"
 	"angle_conv(x) = -x +90.0\n"
-	"plot \"-\"u (0):(0):(1):(angle_conv($1)):(angle_conv($2)):($0+1) with circles lc var,\"\"u (0.7*cos(((angle_conv($2)+angle_conv($3))/2.0))):(0.7*sin(((angle_conv($2)+angle_conv($3))/2.0))):1 with labels\n";
+	"plot \"-\"u (0):(0):(1):(angle_conv($1*360)):(angle_conv($2*360)):($0+1) with circles lc var,\"\"u (cos(((angle_conv($1)+angle_conv($2))/2.0*360.0))):(sin(((angle_conv($1)+angle_conv($2))/2.0*360.0))):3 with labels\n";
 	float sum_degree=0;
 	for(auto value:name_value_map){
 		command_os<<sum_degree;
-		command_os<<sum_degree+value.second/outall;
-		command_os<<value.first<<endl;
 		sum_degree+=value.second/outall;
+		command_os<<" "<<sum_degree;
+		command_os<<" "<<value.first<<endl;
 	}
 	fputs(command_os.str().c_str(),fp);
+        cout<<command_os.str();
 	fflush(fp); 
 	pclose(fp); 
 }
