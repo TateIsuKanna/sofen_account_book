@@ -114,11 +114,7 @@ void calc_rate(){
 	map<string,money>name_value_map;
 
 	for(auto data:master.data){
-		if(name_value_map.find(data.name)==end(name_value_map)){
-			name_value_map[data.name]=data.value;
-		}else{
-			name_value_map[data.name]+=data.value;
-		}
+                name_value_map[data.name]+=data.value;
 
 		if(data.value>0){
 			all+=data.value;
@@ -159,11 +155,6 @@ void calc_rate_graph(){
 			outall-=data.value;
 			name_value_map[data.name]-=data.value;
 		}
-		//if(name_value_map.find(data.name) != name_value_map.end()){
-		//	name_value_map.at(data.name)+=data.value;
-		//}else{
-		//	name_value_map.insert(make_pair(data.name, data.value));
-		//}
 	}
 
 	FILE *fp = popen("gnuplot -p", "w"); 
