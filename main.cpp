@@ -184,13 +184,13 @@ void calc_rate_graph(){
 	"set style lines 4 lc rgb \"magenta\"\n"
 	"set style lines 5 lc rgb \"gray\"\n"
 	"angle_conv(x) = -x +90.0\n"
-	"plot \"-\"u (0):(0):(1):(angle_conv($3)):(angle_conv($2)):($0+1) with circles lc var,\"\"u (0.7*cos(((angle_conv($2)+angle_conv($3))/2.0))):(0.7*sin(((angle_conv($2)+angle_conv($3))/2.0))):1 with labels\n";
-	float hinan=0;
+	"plot \"-\"u (0):(0):(1):(angle_conv($1)):(angle_conv($2)):($0+1) with circles lc var,\"\"u (0.7*cos(((angle_conv($2)+angle_conv($3))/2.0))):(0.7*sin(((angle_conv($2)+angle_conv($3))/2.0))):1 with labels\n";
+	float sum_degree=0;
 	for(auto value:name_value_map){
-		command_os<<value.first;
-		command_os<<hinan;
-		command_os<<hinan+value.second/outall *360<<endl;
-		hinan+=value.second/outall*360;
+		command_os<<sum_degree;
+		command_os<<sum_degree+value.second/outall;
+		command_os<<value.first<<endl;
+		sum_degree+=value.second/outall;
 	}
 	fputs(command_os.str().c_str(),fp);
 	fflush(fp); 
