@@ -166,12 +166,14 @@ void calc_rate_graph(){
         }
 
 	for(auto value:name_value_map){
-                cout<<value.first+string(value.second/outall*(terminal_width-2)-value.first.length(), ' ');
+		string label;
+		label=value.first+" "+to_string(value.second);
+                cout<<label+string(value.second/outall*(terminal_width-5)-label.length()+1, ' ');
 	}
         cout<<endl;
         cout<<"|";
 	for(auto value:name_value_map){
-                cout<<string(value.second/outall*(terminal_width-2), '-')+"|";
+                cout<<string(value.second/outall*(terminal_width-5), '-')+"|";
 	}
         cout<<endl;
 }
