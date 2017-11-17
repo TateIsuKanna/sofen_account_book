@@ -179,7 +179,7 @@ void calc_rate_graph(){
 	"set style lines 4 lc rgb \"magenta\"\n"
 	"set style lines 5 lc rgb \"gray\"\n"
 	"angle_conv(x) = -x +90.0\n"
-	"plot \"-\"u (0):(0):(1):(angle_conv($1*360)):(angle_conv($2*360)):($0+1) with circles lc var,\"\"u (cos(((angle_conv($1)+angle_conv($2))/2.0*360.0))):(sin(((angle_conv($1)+angle_conv($2))/2.0*360.0))):3 with labels\n";
+	"plot \"-\"u (0):(0):(1):(angle_conv($1*360)):(angle_conv($2*360)):($0+1) with circles lc var,\"\"u (cos(((angle_conv($1*360)+angle_conv($2*360))/2.0))):(sin(((angle_conv($1*360)+angle_conv($2*360))/2.0))):3 with labels\n";
 	float sum_degree=0;
 	for(auto value:name_value_map){
 		command_os<<sum_degree;
