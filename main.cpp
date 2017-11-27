@@ -84,6 +84,12 @@ void add_command(){
 		string name;
 		money value;
 		cin>>date_str;
+		if (cin.fail()) {
+			cin.clear();
+			cin.ignore();
+			cout<<endl;
+			continue;
+		}
 		if(date_str=="q"){
 			return;
 		}
@@ -197,8 +203,7 @@ int main(int argc,char* argv[]){
 		string command;
 		cin>>command;
 		if (cin.fail()) {
-			cin.clear();
-			continue;
+			return -1;
 		}
 		if(command.find("user")==0){
 			string user;
