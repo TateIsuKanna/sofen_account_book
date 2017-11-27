@@ -77,7 +77,7 @@ void signal_handler(int signal_n){
 	}
 }
 
-void add_command(){
+void into_addmode(){
 	while(true){
                 cout<<">";
 		string date_str;
@@ -174,7 +174,7 @@ void calc_rate_graph(){
 	for(auto value:name_value_map){
 		string label;
 		label=value.first+" "+to_string(value.second);
-                cout<<label+string(value.second/outall*(terminal_width-5)-label.length()+1, ' ');
+                cout<<label+string(max(0,int(value.second/outall*(terminal_width-5)-label.length()+1)), ' ');
 	}
         cout<<endl;
         cout<<"|";
@@ -202,7 +202,7 @@ int main(int argc,char* argv[]){
 			cin>>user;
 			master.change_user(user);
 		}else if(command.find("add")==0){
-			add_command();
+			into_addmode();
 		}else if(command.find("del")==0){
 			string name;
 			cin>>name;
