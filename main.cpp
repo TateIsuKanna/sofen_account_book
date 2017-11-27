@@ -186,7 +186,17 @@ void calc_rate_graph(){
 
 int main(int argc,char* argv[]){
 	if(argc==2 && string(argv[1])=="-h"){
-		cout<<"usage"<<endl;
+		cout<<
+		"usage: nn [-h]\n"
+		"\n"
+		"内部コマンド\n"
+		"	ユーザー名指定 `user ユーザー名`\n"
+		"	追加 `add [[年/]月/]日 項目名 金額` 年，月は省略すると現在の日付が使われる．\n"
+		"	削除 `del 項目名`\n"
+		"	検索 `search 項目名` \n"
+		"	項目別収支 `rate`\n"
+		"	項目別支出グラフ描画`graph`"
+		<<endl;
 		return 0;
 	}
 	signal(SIGINT, signal_handler);
@@ -216,7 +226,7 @@ int main(int argc,char* argv[]){
 		}else if(command.find("graph")==0){
 			calc_rate_graph();
 		}else{
-			cout<<": '"<<command<<"' is not a command. See ' -h'."<<endl;
+			cout<<"nn: '"<<command<<"' is not a nn command. See 'nn -h'."<<endl;
 		}
 	}
 }
