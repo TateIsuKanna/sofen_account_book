@@ -84,16 +84,15 @@ void add_command(){
 		string name;
 		money value;
 		cin>>date_str;
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore();
-			cout<<endl;
-			continue;
-		}
 		if(date_str=="q"){
 			return;
 		}
 		cin>>name>>value;
+		if (cin.fail()) {
+			cin.clear();
+			cin.ignore();
+			continue;
+		}
 
 		time_t date=time(nullptr);
 		if(date_str!="."){
