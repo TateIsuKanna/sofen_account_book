@@ -79,6 +79,7 @@ void signal_handler(int signal_n){
 
 void add_command(){
 	while(true){
+                cout<<">";
 		string date_str;
 		string name;
 		money value;
