@@ -185,7 +185,7 @@ void calc_rate_graph(){
 }
 
 int main(int argc,char* argv[]){
-	if(argc==2 && string(argv[1])=="-h"){
+	if(argc>=2 && string(argv[1])=="-h"){
 		cout<<
 		"usage: nn [-h]\n"
 		"\n"
