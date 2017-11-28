@@ -148,7 +148,7 @@ void calc_rate(){
 	cout << endl << "支出割合" << endl;
 	for(auto data:name_value_map){
 		if(data.second<0){
-			cout<<data.first<<"  "<<data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
+			cout<<data.first<<"  "<<-data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
 		}
 	}
 
