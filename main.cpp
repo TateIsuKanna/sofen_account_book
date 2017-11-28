@@ -2,15 +2,14 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-accout_book::record::record(time_t a_date,string a_name,money a_value){
+accout_book::record::record(tm a_date,string a_name,money a_value){
 	date=a_date;
 	name=a_name;
 	value=a_value;
 }
 
 ostream& operator << (ostream& os, const accout_book::record& r){
-	tm* lt=localtime(&r.date);
-	os<<lt->tm_year+1900<<"/"<<lt->tm_mon+1<<"/"<<lt->tm_mday<<" "<<r.name<<" "<<r.value;//HACK:マジックナンバーでは
+	os<<put_time(&r.date,"%Y/%m/%d")<<" "<<r.name<<" "<<r.value;//HACK:マジックナンバーでは
 	return os;
 }
 
@@ -28,17 +27,18 @@ void accout_book::change_user(string user_name){
 		for(int c_i=0;c_i<3;++c_i){
 			getline(token_stream,token[c_i],',');
 		}
-		time_t date;
+		tm date;
 		string name;
 		money value;
-		date=stoi(token[0]);
+		istringstream ss(token[0]);
+		ss>>get_time(&date, "%Y/%m/%d");
 		name=token[1];
 		value=stoll(token[2]);
 		data.push_back(accout_book::record(date,name,value));
 	}
 }
 
-void accout_book::add_record(time_t date,string name,money value){
+void accout_book::add_record(tm date,string name,money value){
 	data.push_back(accout_book::record(date,name,value));
 }
 
@@ -64,7 +64,7 @@ void accout_book::search_by_name(string name){
 void accout_book::save(){
 	ofstream file_stream(current_username);
 	for(auto r:data){
-		file_stream<<r.date<<","<<r.name<<","<<r.value<<endl;
+		file_stream<<put_time(&r.date,"%Y/%m/%d")<<","<<r.name<<","<<r.value<<endl;
 	}
 }
 
@@ -94,31 +94,29 @@ void add_command(){
 			continue;
 		}
 
-		time_t date=time(nullptr);
+		time_t now=time(nullptr);
+		tm* date=localtime(&now);
 		if(date_str!="."){
 			//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
 			//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
-			tm* lt=localtime(&date);
 
 			regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
 			sregex_token_iterator it;
 			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
 			if(it->str()!=""){//HACK:多分
-				lt->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
+				date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
 			}
 			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
 			if(it->str()!=""){//HACK:多分
-				lt->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
+				date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
 			}
 			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
 			if(it->str()!=""){//HACK:多分
-				lt->tm_mday=stoi(it->str());
+				date->tm_mday=stoi(it->str());
 			}
-
-			date=mktime(lt);
 		}
 
-		master.add_record(date,name,value);
+		master.add_record(*date,name,value);
 	}
 }
 
