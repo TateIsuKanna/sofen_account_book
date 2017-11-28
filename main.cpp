@@ -56,7 +56,7 @@ void accout_book::search_by_date_and_name(tm date,string name){
 						       return d.date.tm_year==date.tm_year&&
 						       d.date.tm_mon==date.tm_mon&&
 						       d.date.tm_mday==date.tm_mday&&
-						       (name=="*"||d.name.find(name)==0);
+						       (name=="*"||d.name.find(name)!=string::npos);
 						}
 					      ))!=data.end();
 			search_iter++
@@ -216,7 +216,8 @@ int main(int argc,char* argv[]){
 		"	削除\n"
 		"		del 項目名\n"
 		"	検索\n"
-		"		search 項目名 \n"
+		"		search {. | [[年/]月/]日 } {* | 項目名}\n"
+		"		* は全ての項目を指定します．\n"
 		"	項目別収支\n"
 		"		rate\n"
 		"	項目別支出グラフ描画\n"
