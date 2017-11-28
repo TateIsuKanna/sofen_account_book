@@ -48,11 +48,16 @@ void accout_book::del_by_name(string name){
 			    ), data.end());
 }
 
-void accout_book::search_by_name(string name){
+void accout_book::search_by_date_and_name(tm date,string name){
 	for(
 			auto search_iter=data.begin();
 			(search_iter = find_if(search_iter, data.end(), 
-					       [name](record d){return d.name==name;}
+					       [date,name](record d){
+						       return d.date.tm_year==date.tm_year&&
+						       d.date.tm_mon==date.tm_mon&&
+						       d.date.tm_mday==date.tm_mday&&
+						       (name=="*"||d.name.find(name)==0);
+						}
 					      ))!=data.end();
 			search_iter++
 	   ){
@@ -77,6 +82,31 @@ void signal_handler(int signal_n){
 	}
 }
 
+tm* complement_date(string date_str){
+	time_t now=time(nullptr);
+	tm* date=localtime(&now);
+	if(date_str!="."){
+		//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
+		//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
+
+		regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
+		sregex_token_iterator it;
+		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
+		if(it->str()!=""){//HACK:多分
+			date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
+		}
+		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
+		if(it->str()!=""){//HACK:多分
+			date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
+		}
+		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
+		if(it->str()!=""){//HACK:多分
+			date->tm_mday=stoi(it->str());
+		}
+	}
+	return date;
+}
+
 void into_addmode(){
 	while(true){
                 cout<<">";
@@ -94,28 +124,8 @@ void into_addmode(){
 			continue;
 		}
 
-		time_t now=time(nullptr);
-		tm* date=localtime(&now);
-		if(date_str!="."){
-			//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
-			//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
-
-			regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
-			sregex_token_iterator it;
-			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
-			if(it->str()!=""){//HACK:多分
-				date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
-			}
-			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
-			if(it->str()!=""){//HACK:多分
-				date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
-			}
-			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
-			if(it->str()!=""){//HACK:多分
-				date->tm_mday=stoi(it->str());
-			}
-		}
-
+		tm* date=complement_date(date_str);
+		
 		master.add_record(*date,name,value);
 	}
 }
@@ -213,9 +223,11 @@ int main(int argc,char* argv[]){
 			cin>>name;
 			master.del_by_name(name);
 		}else if(command.find("search")==0){
+			string date_str;
 			string name;
-			cin>>name;
-			master.search_by_name(name);
+			cin>>date_str>>name;
+			tm* date=complement_date(date_str);
+			master.search_by_date_and_name(*date,name);
 		}else if(command.find("rate")==0){
 			calc_rate();
 		}else if(command.find("graph")==0){
