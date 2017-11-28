@@ -9,7 +9,7 @@ accout_book::record::record(tm a_date,string a_name,money a_value){
 }
 
 ostream& operator << (ostream& os, const accout_book::record& r){
-	os<<put_time(&r.date,"%Y/%m/%d")<<" "<<r.name<<" "<<r.value;//HACK:マジックナンバーでは
+	os<<put_time(&r.date,"%Y/%m/%d")<<" "<<r.name<<" "<<r.value;
 	return os;
 }
 
@@ -21,7 +21,7 @@ void accout_book::change_user(string user_name){
 	string line;
 	data.clear();
 	while(getline(file_stream,line)){
-		//HACK:流石にちょっと気持ち悪い実装
+		//HACK:流石にちょっと気持ち悪い実装かも
 		string token[3];
 		istringstream token_stream(line);
 		for(int c_i=0;c_i<3;++c_i){
@@ -86,22 +86,27 @@ tm* complement_date(string date_str){
 	time_t now=time(nullptr);
 	tm* date=localtime(&now);
 	if(date_str!="."){
-		//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
-		//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
+		try{
+			//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
+			//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
 
-		regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
-		sregex_token_iterator it;
-		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
-		if(it->str()!=""){//HACK:多分
-			date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
-		}
-		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
-		if(it->str()!=""){//HACK:多分
-			date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
-		}
-		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
-		if(it->str()!=""){//HACK:多分
-			date->tm_mday=stoi(it->str());
+			regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
+			sregex_token_iterator rend;
+			sregex_token_iterator it;
+			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
+			if(it!=rend){
+				date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
+			}
+			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
+			if(it!=rend){
+				date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
+			}
+			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
+			if(it!=rend){
+				date->tm_mday=stoi(it->str());
+			}
+		}catch(const invalid_argument& e){
+			cerr<<e.what()<<endl;
 		}
 	}
 	return date;
@@ -232,25 +237,25 @@ int main(int argc,char* argv[]){
 		if (cin.fail()) {
 			return -1;
 		}
-		if(command.find("user")==0){
+		if(command=="user"){
 			string user;
 			cin>>user;
 			master.change_user(user);
-		}else if(command.find("add")==0){
+		}else if(command=="add"){
 			into_addmode();
-		}else if(command.find("del")==0){
+		}else if(command=="del"){
 			string name;
 			cin>>name;
 			master.del_by_name(name);
-		}else if(command.find("search")==0){
+		}else if(command=="search"){
 			string date_str;
 			string name;
 			cin>>date_str>>name;
 			tm* date=complement_date(date_str);
 			master.search_by_date_and_name(*date,name);
-		}else if(command.find("rate")==0){
+		}else if(command=="rate"){
 			calc_rate();
-		}else if(command.find("graph")==0){
+		}else if(command=="graph"){
 			calc_rate_graph();
 		}else{
 			cout<<"nn: '"<<command<<"' is not a nn command. See 'nn -h'."<<endl;
