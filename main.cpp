@@ -91,17 +91,18 @@ tm* complement_date(string date_str){
 			//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
 
 			regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
+			sregex_token_iterator rend;
 			sregex_token_iterator it;
 			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
-			if(it->str()!=""){//HACK:多分
+			if(it!=rend&&it->str()!=""){//HACK:多分
 				date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
 			}
 			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
-			if(it->str()!=""){//HACK:多分
+			if(it!=rend&&it->str()!=""){//HACK:多分
 				date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
 			}
 			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
-			if(it->str()!=""){//HACK:多分
+			if(it!=rend&&it->str()!=""){//HACK:多分
 				date->tm_mday=stoi(it->str());
 			}
 		}catch(const invalid_argument& e){
