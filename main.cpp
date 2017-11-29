@@ -208,11 +208,14 @@ void calc_rate(){
 		}
 	}
 
-	cout << endl << "残高  " << zandaka <<"円"<<endl;
+	cout << endl << "残高  " ;
 	if(zandaka > 0){
-		cout << "黒字" << endl;
+		cout << zandaka <<"円"<<endl
+		<< "黒字" << endl;
 	}else{
-		cout << "赤字!!!!!" << endl;
+		cout << "\033[31m"  <<"\033[47m"  
+		<< zandaka <<"円"<<endl
+		<< "赤字!!!!!" <<"\033[39m"<<"\033[49m"  <<endl<<endl;
 	}
 }
 
