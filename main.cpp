@@ -53,10 +53,32 @@ void accout_book::search_by_date_and_name(tm date,string name){
 			auto search_iter=data.begin();
 			(search_iter = find_if(search_iter, data.end(), 
 					       [date,name](record d){
-						       return d.date.tm_year==date.tm_year&&
-						       d.date.tm_mon==date.tm_mon&&
-						       d.date.tm_mday==date.tm_mday&&
-						       (name=="*"||d.name.find(name)!=string::npos);
+                                                       bool is_date_eq=
+                                                                d.date.tm_year==date.tm_year&&
+                                                               d.date.tm_mon==date.tm_mon&&
+                                                               d.date.tm_mday==date.tm_mday;
+;
+                                                       if(date.tm_year==0&&date.tm_mon==0&&date.tm_mday==0){
+                                                               is_date_eq=true;
+                                                       }
+                                                       regex comp_re(R"((-?[<>])(\d+))");
+                                                       sregex_token_iterator rend;
+                                                       sregex_token_iterator comp_it=sregex_token_iterator(begin(name), end(name), comp_re, 1);
+                                                       sregex_token_iterator value_it=sregex_token_iterator(begin(name), end(name), comp_re, 2);
+                                                       if(comp_it!=rend&&comp_it->str()!=""){//HACK:多分
+                                                               bool is_inner_range=true;
+                                                               if(comp_it->str()==">"){
+                                                                       is_inner_range=d.value>stoi(value_it->str());
+                                                               }else if(comp_it->str()=="<"){
+                                                                       is_inner_range=d.value>0 && d.value<stoi(value_it->str());
+                                                               }else if(comp_it->str()=="->"){
+                                                                       is_inner_range=d.value<-stoi(value_it->str());
+                                                               }else if(comp_it->str()=="-<"){
+                                                                       is_inner_range=d.value<0 && d.value>-stoi(value_it->str());
+                                                               }
+                                                               return is_date_eq&&is_inner_range;
+                                                       }
+                                                       return is_date_eq && (name=="*"||d.name.find(name)!=string::npos);
 						}
 					      ))!=data.end();
 			search_iter++
@@ -85,6 +107,14 @@ void signal_handler(int signal_n){
 tm* complement_date(string date_str){
 	time_t now=time(nullptr);
 	tm* date=localtime(&now);
+
+        //HACK:好ましい実装では無い
+        if(date_str=="*"){
+                date->tm_year=0;
+                date->tm_mon=0;
+                date->tm_mday=0;
+                return date;
+        }
 	if(date_str!="."){
 		try{
 			//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
