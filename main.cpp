@@ -9,7 +9,14 @@ accout_book::record::record(tm a_date,string a_name,money a_value){
 }
 
 ostream& operator << (ostream& os, const accout_book::record& r){
-        os<<r.date.tm_year+1900<<"/"<<r.date.tm_mon+1<<"/"<<r.date.tm_mday<<" "<<r.name<<" "<<r.value;//HACK:マジックナンバーでは
+        os<<r.date.tm_year+1900
+		<<"/"
+		<<setfill('0')<<right<<setw(2)<<r.date.tm_mon+1
+		<<"/"
+		<<setw(2)<<r.date.tm_mday
+		<<" "
+		<<setfill(' ')<<left<<setw(30)<<r.name
+		<<setw(20)<<r.value;//HACK:マジックナンバーでは
 	return os;
 }
 
@@ -186,14 +193,15 @@ void calc_rate(){
 	cout << endl << "総収入割合" << endl;
 	for(auto data:name_value_map){
 		if(data.second>0){
-			cout<<data.first<<"  "<<data.second<<"円  "<<(int)round((float)data.second/(float)all*100)<<"％"<<endl;
+			cout<<left<<setw(20)<<data.first
+			<<"  "<<right<<setw(20)<<data.second<<"円  "<<(int)round((float)data.second/(float)all*100)<<"％"<<endl;
 		}
 	}
 
 	cout << endl << "支出割合" << endl;
 	for(auto data:name_value_map){
 		if(data.second<0){
-			cout<<data.first<<"  "<<-data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
+			cout<<left<<setw(20)<<data.first<<"  "<<right<<setw(20)<<-data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
 		}
 	}
 
