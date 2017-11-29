@@ -31,7 +31,7 @@ class accout_book{
                 string current_username;
                 void change_user(string user);
                 void add_record(tm date,string name,money value);
-                void del_by_name(string name);
+                void del_by_name(tm date,string name);
                 void search_by_date_and_name(tm date,string name);
                 void save();
 };

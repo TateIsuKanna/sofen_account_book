@@ -49,9 +49,39 @@ void accout_book::add_record(tm date,string name,money value){
 	data.push_back(accout_book::record(date,name,value));
 }
 
-void accout_book::del_by_name(string name){
+bool compare_condition(tm date,string name,accout_book::record d){
+	bool is_date_eq=
+		d.date.tm_year==date.tm_year&&
+		d.date.tm_mon==date.tm_mon&&
+		d.date.tm_mday==date.tm_mday;
+	if(date.tm_year==0&&date.tm_mon==0&&date.tm_mday==0){
+		is_date_eq=true;
+	}
+	regex comp_re(R"((-?[<>])(\d+))");
+	sregex_token_iterator rend;
+	sregex_token_iterator comp_it=sregex_token_iterator(begin(name), end(name), comp_re, 1);
+	sregex_token_iterator value_it=sregex_token_iterator(begin(name), end(name), comp_re, 2);
+	if(comp_it!=rend&&comp_it->str()!=""){//HACK:多分
+		bool is_inner_range=true;
+		if(comp_it->str()==">"){
+			is_inner_range=d.value>stoi(value_it->str());
+		}else if(comp_it->str()=="<"){
+			is_inner_range=d.value>0 && d.value<stoi(value_it->str());
+		}else if(comp_it->str()=="->"){
+			is_inner_range=d.value<-stoi(value_it->str());
+		}else if(comp_it->str()=="-<"){
+			is_inner_range=d.value<0 && d.value>-stoi(value_it->str());
+		}
+		return is_date_eq&&is_inner_range;
+	}
+	return is_date_eq && (name=="*"||d.name.find(name)!=string::npos);
+}
+
+void accout_book::del_by_name(tm date,string name){
 	data.erase(remove_if(data.begin(), data.end(), 
-				[name](record d){return d.name==name;}
+				[date,name](record d){
+					return compare_condition(date,name,d);
+				}
 			    ), data.end());
 }
 
@@ -60,32 +90,7 @@ void accout_book::search_by_date_and_name(tm date,string name){
 			auto search_iter=data.begin();
 			(search_iter = find_if(search_iter, data.end(), 
 					       [date,name](record d){
-                                                       bool is_date_eq=
-                                                                d.date.tm_year==date.tm_year&&
-                                                               d.date.tm_mon==date.tm_mon&&
-                                                               d.date.tm_mday==date.tm_mday;
-;
-                                                       if(date.tm_year==0&&date.tm_mon==0&&date.tm_mday==0){
-                                                               is_date_eq=true;
-                                                       }
-                                                       regex comp_re(R"((-?[<>])(\d+))");
-                                                       sregex_token_iterator rend;
-                                                       sregex_token_iterator comp_it=sregex_token_iterator(begin(name), end(name), comp_re, 1);
-                                                       sregex_token_iterator value_it=sregex_token_iterator(begin(name), end(name), comp_re, 2);
-                                                       if(comp_it!=rend&&comp_it->str()!=""){//HACK:多分
-                                                               bool is_inner_range=true;
-                                                               if(comp_it->str()==">"){
-                                                                       is_inner_range=d.value>stoi(value_it->str());
-                                                               }else if(comp_it->str()=="<"){
-                                                                       is_inner_range=d.value>0 && d.value<stoi(value_it->str());
-                                                               }else if(comp_it->str()=="->"){
-                                                                       is_inner_range=d.value<-stoi(value_it->str());
-                                                               }else if(comp_it->str()=="-<"){
-                                                                       is_inner_range=d.value<0 && d.value>-stoi(value_it->str());
-                                                               }
-                                                               return is_date_eq&&is_inner_range;
-                                                       }
-                                                       return is_date_eq && (name=="*"||d.name.find(name)!=string::npos);
+						       return compare_condition(date,name,d);
 						}
 					      ))!=data.end();
 			search_iter++
@@ -290,9 +295,11 @@ int main(int argc,char* argv[]){
 		}else if(command=="add"){
 			into_addmode();
 		}else if(command=="del"){
+			string date_str;
 			string name;
-			cin>>name;
-			master.del_by_name(name);
+			cin>>date_str>>name;
+			tm* date=complement_date(date_str);
+			master.del_by_name(*date,name);
 		}else if(command=="search"){
 			string date_str;
 			string name;
