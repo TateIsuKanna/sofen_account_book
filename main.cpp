@@ -194,7 +194,8 @@ void calc_rate(){
 	for(auto data:name_value_map){
 		if(data.second>0){
 			cout<<left<<setw(20)<<data.first
-			<<"  "<<right<<setw(20)<<data.second<<"円  "<<(int)round((float)data.second/(float)all*100)<<"％"<<endl;
+			<<right<<setw(20)<<data.second<<"円"
+			<<setw(5)<<(int)round((float)data.second/(float)all*100)<<"％"<<endl;
 		}
 	}
 
@@ -202,7 +203,8 @@ void calc_rate(){
 	for(auto data:name_value_map){
 		if(data.second<0){
 			cout<<left<<setw(20)<<data.first
-			<<"  "<<right<<setw(20)<<-data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
+			<<right<<setw(20)<<-data.second<<"円"
+			<<setw(5)<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
 		}
 	}
 
@@ -210,7 +212,7 @@ void calc_rate(){
 	if(zandaka > 0){
 		cout << "黒字" << endl;
 	}else{
-		cout << "赤字！！" << endl;
+		cout << "赤字!!!!!" << endl;
 	}
 }
 
@@ -233,14 +235,13 @@ void calc_rate_graph(){
 
 	cout<<left;
 	for(auto value:name_value_map){
-		string label;
-		label=value.first+" "+to_string(value.second);
+		string label=value.first+" "+to_string(value.second)+"円 ";
                 cout<<setw(value.second/outall*(terminal_width-10)+1)<<label;
 	}
         cout<<endl;
         cout<<"|";
 	for(auto value:name_value_map){
-                cout<<string(value.second/outall*(terminal_width-10), '-')+"|";
+                cout<<string(value.second/outall*(terminal_width-10), '-')<<"|";
 	}
         cout<<endl;
 }
