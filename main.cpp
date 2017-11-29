@@ -9,7 +9,7 @@ accout_book::record::record(tm a_date,string a_name,money a_value){
 }
 
 ostream& operator << (ostream& os, const accout_book::record& r){
-	os<<put_time(&r.date,"%Y/%m/%d")<<" "<<r.name<<" "<<r.value;
+        os<<r.date.tm_year+1900<<"/"<<r.date.tm_mon+1<<"/"<<r.date.tm_mday<<" "<<r.name<<" "<<r.value;//HACK:マジックナンバーでは
 	return os;
 }
 
@@ -30,8 +30,8 @@ void accout_book::change_user(string user_name){
 		tm date;
 		string name;
 		money value;
-		istringstream ss(token[0]);
-		ss>>get_time(&date, "%Y/%m/%d");
+
+                strptime(token[0].c_str(), "%Y/%m/%d", &date);
 		name=token[1];
 		value=stoll(token[2]);
 		data.push_back(accout_book::record(date,name,value));
@@ -69,7 +69,7 @@ void accout_book::search_by_date_and_name(tm date,string name){
 void accout_book::save(){
 	ofstream file_stream(current_username);
 	for(auto r:data){
-		file_stream<<put_time(&r.date,"%Y/%m/%d")<<","<<r.name<<","<<r.value<<endl;
+		file_stream<<r.date.tm_year+1900<<"/"<<r.date.tm_mon+1<<"/"<<r.date.tm_mday<<","<<r.name<<","<<r.value<<endl;//HACK:マジックナンバーでは
 	}
 }
 
