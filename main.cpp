@@ -49,13 +49,47 @@ void accout_book::add_record(tm date,string name,money value){
 	data.push_back(accout_book::record(date,name,value));
 }
 
-bool compare_condition(tm date,string name,accout_book::record d){
-	bool is_date_eq=
-		d.date.tm_year==date.tm_year&&
-		d.date.tm_mon==date.tm_mon&&
-		d.date.tm_mday==date.tm_mday;
-	if(date.tm_year==0&&date.tm_mon==0&&date.tm_mday==0){
+tm* complement_date(string date_str){
+	time_t now=time(nullptr);
+	tm* date=localtime(&now);
+
+	if(date_str=="."){
+		return date;
+	}
+	try{
+		//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
+		//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
+
+		regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
+		sregex_token_iterator rend;
+		sregex_token_iterator it;
+		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
+		if(it!=rend&&it->str()!=""){//HACK:多分
+			date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
+		}
+		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
+		if(it!=rend&&it->str()!=""){//HACK:多分
+			date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
+		}
+		it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
+		if(it!=rend&&it->str()!=""){//HACK:多分
+			date->tm_mday=stoi(it->str());
+		}
+	}catch(const invalid_argument& e){
+		cerr<<e.what()<<endl;
+	}
+	return date;
+}
+
+bool compare_condition(string date_str,string name,accout_book::record d){
+	bool is_date_eq;
+	if(date_str=="*"){
 		is_date_eq=true;
+	}else{
+		tm* date=complement_date(date_str);
+		is_date_eq=d.date.tm_year==date->tm_year&&
+		d.date.tm_mon==date->tm_mon&&
+		d.date.tm_mday==date->tm_mday;
 	}
 	regex comp_re(R"((-?[<>])(\d+))");
 	sregex_token_iterator rend;
@@ -77,20 +111,20 @@ bool compare_condition(tm date,string name,accout_book::record d){
 	return is_date_eq && (name=="*"||d.name.find(name)!=string::npos);
 }
 
-void accout_book::del_by_name(tm date,string name){
+void accout_book::del_by_name(string date_str,string name){
 	data.erase(remove_if(data.begin(), data.end(), 
-				[date,name](record d){
-					return compare_condition(date,name,d);
+				[date_str,name](record d){
+					return compare_condition(date_str,name,d);
 				}
 			    ), data.end());
 }
 
-void accout_book::search_by_date_and_name(tm date,string name){
+void accout_book::search_by_date_and_name(string date_str,string name){
 	for(
 			auto search_iter=data.begin();
 			(search_iter = find_if(search_iter, data.end(), 
-					       [date,name](record d){
-						       return compare_condition(date,name,d);
+					       [date_str,name](record d){
+						       return compare_condition(date_str,name,d);
 						}
 					      ))!=data.end();
 			search_iter++
@@ -116,43 +150,6 @@ void signal_handler(int signal_n){
 	}
 }
 
-tm* complement_date(string date_str){
-	time_t now=time(nullptr);
-	tm* date=localtime(&now);
-
-        //HACK:好ましい実装では無い
-        if(date_str=="*"){
-                date->tm_year=0;
-                date->tm_mon=0;
-                date->tm_mday=0;
-                return date;
-        }
-	if(date_str!="."){
-		try{
-			//日付補完．今日の日付を元に，入力した部分だけ置き換えする．
-			//例えば，2011/11/12 で入力が 11 なら 2011/11/11 にする．
-
-			regex date_re(R"((((\d{4,})/)?([1-9]|1[0-2])/)?([1-3]\d|[1-9]))");
-			sregex_token_iterator rend;
-			sregex_token_iterator it;
-			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 3);
-			if(it!=rend&&it->str()!=""){//HACK:多分
-				date->tm_year=stoi(it->str())-1900;//HACK:マジックナンバーでは
-			}
-			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 4);
-			if(it!=rend&&it->str()!=""){//HACK:多分
-				date->tm_mon=stoi(it->str())-1;//HACK:マジックナンバーでは
-			}
-			it=sregex_token_iterator(begin(date_str), end(date_str), date_re, 5);
-			if(it!=rend&&it->str()!=""){//HACK:多分
-				date->tm_mday=stoi(it->str());
-			}
-		}catch(const invalid_argument& e){
-			cerr<<e.what()<<endl;
-		}
-	}
-	return date;
-}
 
 void into_addmode(){
 	while(true){
@@ -298,14 +295,12 @@ int main(int argc,char* argv[]){
 			string date_str;
 			string name;
 			cin>>date_str>>name;
-			tm* date=complement_date(date_str);
-			master.del_by_name(*date,name);
+			master.del_by_name(date_str,name);
 		}else if(command=="search"){
 			string date_str;
 			string name;
 			cin>>date_str>>name;
-			tm* date=complement_date(date_str);
-			master.search_by_date_and_name(*date,name);
+			master.search_by_date_and_name(date_str,name);
 		}else if(command=="rate"){
 			calc_rate();
 		}else if(command=="graph"){
