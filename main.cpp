@@ -15,8 +15,8 @@ ostream& operator << (ostream& os, const accout_book::record& r){
 		<<"/"
 		<<setw(2)<<r.date.tm_mday
 		<<" "
-		<<setfill(' ')<<left<<setw(30)<<r.name
-		<<setw(20)<<r.value;//HACK:マジックナンバーでは
+		<<setfill(' ')<<left<<setw(20)<<r.name
+		<<right<<setw(20)<<r.value<<"円";//HACK:マジックナンバーでは
 	return os;
 }
 
@@ -201,7 +201,8 @@ void calc_rate(){
 	cout << endl << "支出割合" << endl;
 	for(auto data:name_value_map){
 		if(data.second<0){
-			cout<<left<<setw(20)<<data.first<<"  "<<right<<setw(20)<<-data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
+			cout<<left<<setw(20)<<data.first
+			<<"  "<<right<<setw(20)<<-data.second<<"円  "<<(int)round(-(float)data.second/(float)suball*100)<<"％"<<endl;
 		}
 	}
 
@@ -230,10 +231,11 @@ void calc_rate_graph(){
                 terminal_width  = ws.ws_col;
         }
 
+	cout<<left;
 	for(auto value:name_value_map){
 		string label;
 		label=value.first+" "+to_string(value.second);
-                cout<<left<<setw(value.second/outall*(terminal_width-10)+1)<<label;
+                cout<<setw(value.second/outall*(terminal_width-10)+1)<<label;
 	}
         cout<<endl;
         cout<<"|";
